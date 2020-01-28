@@ -148,7 +148,7 @@ for LineageOS to start. Note that if you've used your device before,
 there's no need for this. Also note that the following will wipe your
 userdata on the device:
 
-# mkte2fs -T ext4 /dev/block/mmcblk1p24
+# mke2fs -T ext4 /dev/block/mmcblk1p24
 
 5.2 Optionally reformat mmcblk1p25 emstorage partition as ext4
 
@@ -180,10 +180,16 @@ system partition without gapps and for mmcblk1p23 webtop partition. Do
 not use "altpart" name above for active_slot, it will cause a blank screen
 on boot.
 
-5.4 Set the stock partition active in SafeStrap recovery
+5.4 Set the stock partition active in SafeStrap recovery (if install LOS14 on mmcblk1p20 a.k.a system)
 
 On the device, select "Boot Options" -> "Stock ROM" -> "Activate" if not
 already active. After setting it, red "ROM SLot: stock" should display on
+the top of the screen
+
+5.4.1 set the webtop partition active in SafeStrap recovery (if install LOS14 on mmcblk1p23 a.k.a webtop)
+
+On the device, select "Boot Options" -> "Webtop ->System" -> "Activate" if not
+already active. After setting it, red "ROM SLot: altpart or webtop" should display on
 the top of the screen
 
 5.5 Install LineageOS with adb sideload
@@ -203,6 +209,7 @@ $ adb sideload addonsu-14.1-arm-signed.zip
 5.6 Configure kexecboot boot/boot.cfg file on the stock partition
 
 Note that you currently need to do this every time you update LineageOS
+
 on the mmcblk1p20 stock partition.
 
 $ adb shell
@@ -220,7 +227,10 @@ EOF
 
 Or if booting to mmcblk1p23 webtop altpart:
 
-# cat > /system/boot/boot.cfg << EOF
+$ adb shell
+# mkdir webtop
+# mount /dev/block/mmcblk1p23 /webtop (if get error bussy. you can umount first then mount it again)
+# cat > /webtop/boot/boot.cfg << EOF
 LABEL=LineageOS on mmcblk1p23 webtop partition
 PRIORITY=7
 DTB=/etc/kexec/devtree
